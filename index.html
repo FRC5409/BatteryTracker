@@ -680,64 +680,7 @@
       return(<div className="app"><div className="hdr"><div className="hdr-inner"><img src={LOGO_SRC} className="hdr-logo" alt="CHARGERS"/><div className="hdr-text"><div className="hdr-title">Setup Required</div><div className="hdr-team">CHARGERS · FRC Team 5409</div></div></div></div><div className="pg"><div className="card" style={{borderColor:"var(--yellow)"}}><div className="ch"><span className="ct">Firebase Setup Guide</span></div><div className="cb">{[["Go to console.firebase.google.com and sign in with Google.","1"],["Click \"Create a project\", name it frc180-batteries, finish setup.","2"],["Click the Web icon (</> ), register the app, copy the firebaseConfig.","3"],["Paste the 6 config values into this file where it says PASTE_..._HERE.","4"],["Go to Build → Firestore Database → Create database → Start in test mode.","5"],["Save and upload to Netlify. All devices share live data!","6"]].map(([t,n])=>(<div key={n} className="setup-step"><div className="step-num">{n}</div><div className="step-text">{t}</div></div>))}</div></div></div></div>);
     }
 
-    /* ── Main App ────────────────────────────────── */
-    function App() {
-      const [page, setPage] = React.useState('home'); // 'home' or 'event'
-      const [events, setEvents] = React.useState([]); // Array of {id, name, records: []}
-      const [activeEventId, setActiveEventId] = React.useState(null);
-
-      // When an event is selected, filter the records
-      const eventRecords = activeEventId 
-        ? records.filter(r => r.eventId === activeEventId) 
-        : [];
-      const [tab, setTab]         = useState("log");
-      const [batteries, setBats]  = useState([]);
-      const [records, setRecs]    = useState([]);
-      const [loading, setLoading] = useState(true);
-      const [online, setOnline]   = useState(true);
-      const [toast, setToast]     = useState(null);
-      const [view, setView]       = useState(null);
-      const [newBat, setNewBat]   = useState("");
-      const [savingPre, setSavingPre]   = useState(false);
-      const [savingPost, setSavingPost] = useState(false);
-      const [confirm, setConfirm] = useState(null);
-      const [qrBat, setQrBat]     = useState(null);
-
-      // Pre-match form
-      const [preForm, setPreForm] = useState({
-        batteryId: getPreselectedBattery(),
-        match:"", v:"", pct:"", ir:""
-      });
-
-      const promptNewEvent = () => {
-        const name = prompt("Enter Event Name (e.g. 2024 District Comp):");
-        if (!name) return;
-        
-        const newEvent = {
-          id: 'ev_' + Date.now(),
-          name: name,
-          createdAt: Date.now()
-        };
-        
-        // Save to state (and Firebase if you are using it)
-        const updatedEvents = [...events, newEvent];
-        setEvents(updatedEvents);
-        db.collection('events').doc(newEvent.id).set(newEvent); // Optional Firebase
-      };
-
-      const deleteEvent = (id) => {
-        if (confirm("Are you sure? This will hide records in this folder.")) {
-          setEvents(events.filter(e => e.id !== id));
-          // If you delete from Firebase, also handle the orphaned records
-        }
-      };
-
-      const selectEvent = (ev) => {
-        setActiveEventId(ev);
-        setPage('event');
-      };
-
-      // 1. PreTab Component
+    // 1. PreTab Component
       const PreTab = ({ activeEventId }) => (
         <div className="card">
           <div className="ch"><div className="ct">NEW PRE-MATCH RECORD</div></div>
@@ -797,6 +740,65 @@
           </div>
         </div>
       );
+
+    /* ── Main App ────────────────────────────────── */
+    function App() {
+      const [page, setPage] = React.useState('home'); // 'home' or 'event'
+      const [events, setEvents] = React.useState([]); // Array of {id, name, records: []}
+      const [activeEventId, setActiveEventId] = React.useState(null);
+
+      // When an event is selected, filter the records
+      const eventRecords = activeEventId 
+        ? records.filter(r => r.eventId === activeEventId) 
+        : [];
+      const [tab, setTab]         = useState("log");
+      const [batteries, setBats]  = useState([]);
+      const [records, setRecs]    = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [online, setOnline]   = useState(true);
+      const [toast, setToast]     = useState(null);
+      const [view, setView]       = useState(null);
+      const [newBat, setNewBat]   = useState("");
+      const [savingPre, setSavingPre]   = useState(false);
+      const [savingPost, setSavingPost] = useState(false);
+      const [confirm, setConfirm] = useState(null);
+      const [qrBat, setQrBat]     = useState(null);
+
+      // Pre-match form
+      const [preForm, setPreForm] = useState({
+        batteryId: getPreselectedBattery(),
+        match:"", v:"", pct:"", ir:""
+      });
+
+      const promptNewEvent = () => {
+        const name = prompt("Enter Event Name (e.g. 2024 District Comp):");
+        if (!name) return;
+        
+        const newEvent = {
+          id: 'ev_' + Date.now(),
+          name: name,
+          createdAt: Date.now()
+        };
+        
+        // Save to state (and Firebase if you are using it)
+        const updatedEvents = [...events, newEvent];
+        setEvents(updatedEvents);
+        db.collection('events').doc(newEvent.id).set(newEvent); // Optional Firebase
+      };
+
+      const deleteEvent = (id) => {
+        if (confirm("Are you sure? This will hide records in this folder.")) {
+          setEvents(events.filter(e => e.id !== id));
+          // If you delete from Firebase, also handle the orphaned records
+        }
+      };
+
+      const selectEvent = (ev) => {
+        setActiveEventId(ev.id);
+        setPage('event');
+      };
+
+      
 
       // Auto-fill next match number when battery changes
       useEffect(() => {
