@@ -11,17 +11,17 @@
     /* ── STYLES ── */
     *{box-sizing:border-box;margin:0;padding:0;}
     :root{
-      --blue:#1B3A8C;--blue-dark:#122870;--blue-light:#2E55CC;
+      --blue:#384293;--black:#000000;
       --red:#C41E1E;--red-dark:#8B1010;
       --yellow:#F5C800;--green:#39FF14;
       --orange:#FF9933;
-      --bg:#0A0E1A;--surface:#0F1526;--surface2:#161E35;
+      --bg:#01021f;--surface:#0F1526;--surface2:#161E35;
       --border:#1E2D5A;--text:#E8ECF8;--muted:#5A6A99;
       --mono:'Share Tech Mono',monospace;--disp:'Oswald',sans-serif;--body:'Barlow Condensed',sans-serif;
     }
     html,body{background:var(--bg);height:100%;font-family:var(--body);color:var(--text);-webkit-tap-highlight-color:transparent;}
     .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
-    .hdr{background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--blue-light) 100%);border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100;}
+    .hdr{background:var(--black);border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100;}
     .hdr-inner{display:flex;align-items:center;padding:12px 16px;gap:15px;}
     .hdr-title{font-family:var(--disp);font-size:24px;font-weight:900;letter-spacing:1px;color:var(--yellow);line-height:1;}
     .hdr-subtitle {
@@ -184,7 +184,7 @@
                     </select>
                     <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
                       <input className="inp" placeholder="V" type="number" value={pre.v} onChange={e=>setPre({...pre, v:e.target.value})}/>
-                      <input className="inp" placeholder="%" type="number" value={pre.pct} onChange={e=>setPre({...pre, pct:e.target.value})}/>
+                      <input className="inp" placeholder="Charge %" type="number" value={pre.pct} onChange={e=>setPre({...pre, pct:e.target.value})}/>
                       <input className="inp" placeholder="IR" type="number" value={pre.ir} onChange={e=>setPre({...pre, ir:e.target.value})}/>
                     </div>
                     <button className="btn-p" onClick={savePre}>Save Pre-Match</button>
