@@ -12,7 +12,7 @@
     *{box-sizing:border-box;margin:0;padding:0;}
     :root{
       --blue:#384293;--black:#000000;
-      --red:#C41E1E;--red-dark:#8B1010;
+      --red:#FF4D4D;--red-dark:#8B1010;
       --yellow:#F5C800;--green:#39FF14;
       --orange:#FF9933;
       --bg:#01021f;--surface:#0F1526;--surface2:#161E35;
@@ -25,14 +25,13 @@
     .hdr-inner{display:flex;align-items:center;padding:12px 16px;gap:15px;}
     .hdr-title{font-family:var(--disp);font-size:24px;font-weight:900;letter-spacing:1px;color:var(--yellow);line-height:1;}
     .hdr-subtitle {
-      display: block;        /* Forces it to the next line */
-      font-size: 1rem;       /* Makes it smaller (half the size of the main title) */
-      font-weight: normal;   /* Optional: makes it look less "heavy" than the main title */
-      color: #666;           /* Optional: dims the color slightly for better hierarchy */
+      display: block;
+      font-size: 1rem;
+      font-weight: normal;
+      color: #666;
     }
-    .hdr-team{font-family:var(--disp);font-size:12px;color:#AAC0FF;letter-spacing:1px;text-transform:uppercase;}
     .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:71px;z-index:90;}
-    .tab{flex:1;padding:14px 5px;font-family:var(--disp);font-size:13px;font-weight:600;text-transform:uppercase;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;}
+    .tab{flex:1;padding:14px 5px;font-family:var(--disp);font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;}
     .tab.on{color:var(--yellow);border-bottom-color:var(--yellow);background:rgba(245,200,0,0.05);}
     .pg{padding:16px;flex:1;}
     .card{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden;}
@@ -41,18 +40,24 @@
     .cb{padding:16px;}
     .bi{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
     .bid{font-family:var(--disp);font-size:18px;font-weight:700;}
-    .bsub{font-family:var(--mono);font-size:11px;color:var(--muted);}
     .btn-qr{background:var(--blue);color:white;border:none;padding:6px 12px;border-radius:3px;font-family:var(--disp);font-size:11px;cursor:pointer;}
     .btn-d{color:var(--red);background:none;border:none;font-size:11px;cursor:pointer;font-family:var(--disp);}
-    .inp{width:100%;background:#070B16;border:1px solid var(--border);border-radius:3px;padding:12px;color:var(--text);font-family:var(--mono);margin-bottom:10px;}
+    .inp{width:100%;background:#070B16;border:1px solid var(--border);border-radius:3px;padding:12px;color:var(--text);font-family:var(--mono);margin-bottom:10px;outline:none;}
     .btn-p{width:100%;background:var(--blue);color:white;border:none;padding:14px;font-family:var(--disp);font-size:14px;font-weight:700;text-transform:uppercase;border-radius:3px;cursor:pointer;}
     .st{background:#070B16;padding:10px;border:1px solid var(--border);border-radius:2px;}
     .sl{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;}
     .sv{font-family:var(--mono);font-size:14px;font-weight:600;}
-    .back-btn{background:none;border:none;color:var(--yellow);padding:10px 16px;font-family:var(--disp);cursor:pointer;}
-    table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;}
-    th{text-align:left;color:var(--muted);padding:8px;border-bottom:1px solid var(--border);font-size:10px;}
-    td{padding:10px 8px;border-bottom:1px solid var(--border);}
+    .back-btn{background:none;border:none;color:var(--yellow);padding:10px 16px;font-family:var(--disp);cursor:pointer;font-weight:700;}
+
+    /* ── NEW STATS PANEL STYLES ── */
+    .stat-panel{background:rgba(22, 30, 53, 0.6);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:12px;}
+    .stat-header{display:flex;justify-content:space-between;align-items:flex-end;}
+    .stat-bat-id{font-family:var(--disp);font-size:28px;font-weight:900;line-height:1;color:var(--text);}
+    .stat-usage{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;}
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .stat-box{background:rgba(7, 11, 22, 0.5);padding:10px;border-radius:4px;border-left:3px solid var(--blue);}
+    .stat-label{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+    .stat-value{font-family:var(--disp);font-size:18px;font-weight:700;}
   </style>
 </head>
 <body>
@@ -65,7 +70,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 
   <script type="text/babel">
-    // ── FIREBASE CONFIG ──
     const firebaseConfig = { 
       apiKey: "AIzaSyAsP6CNH0Eqhc93hqn2fOwTUlQhff-lAOk",
       authDomain: "battery-tracker-5409.firebaseapp.com",
@@ -100,8 +104,10 @@
         return () => { u1(); u2(); u3(); };
       }, []);
 
+      const sortedBats = [...batteries].sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
+
       const handleAddBattery = () => {
-        const n = prompt("Battery Name (e.g. El Primo):");
+        const n = prompt("Battery Name:");
         if(n) db.collection("batteries").doc(n.toUpperCase().trim()).set({ added: Date.now() });
       };
 
@@ -127,12 +133,6 @@
         <div className="app">
           <div className="hdr">
             <div className="hdr-inner">
-              <img 
-                src="https://lh3.googleusercontent.com/sitesv/APaQ0SQO-Q1y6sjLYChCDTlFQ-tvOaOLQJMLzwTbzHUJPPVwmoRv1prFl-ujmWgAok3K1bdeGFLb6l28K5Qqh5qXcN0u4qfz0UXOVBSx6o2bhYv3GM5sI1lrMLu1NlEnd0ksUbXi_foSOwka8sm5GBxH6ywM6tjzneeXsUk=w16383" 
-                alt="Logo"
-                width = "50"
-                height = "50"
-                className="hdr-logo" />
               <div className="hdr-title">
                 5409 CHARGERS ⚡ 
                 <span className="hdr-subtitle">BATTERY TRACKER</span>
@@ -145,31 +145,21 @@
               <div className="card">
                 <div className="ch"><div className="ct">🔋 Batteries</div><button className="btn-qr" onClick={handleAddBattery}>+ Add</button></div>
                 <div className="cb" style={{padding:0}}>
-                  {batteries.sort((a,b)=>a.id.localeCompare(b.id, undefined, {numeric:true})).map(b => (
+                  {sortedBats.map(b => (
                     <div key={b.id} className="bi">
                       <div className="bid">{b.id}</div>
-                      <button className="btn-d" onClick={() => {
-                        if(confirm(`Are you sure you want to delete battery "${b.id}"?`)) {
-                          db.collection("batteries").doc(b.id).delete();
-                        }
-                      }}>Delete</button>
+                      <button className="btn-d" onClick={() => confirm(`Delete ${b.id}?`) && db.collection("batteries").doc(b.id).delete()}>Delete</button>
                     </div>
                   ))}
                 </div>
               </div>
-
               <div className="card">
                 <div className="ch"><div className="ct">📁 Event Folders</div><button className="btn-qr" onClick={handleAddEvent}>+ New</button></div>
                 <div className="cb" style={{padding:0}}>
                   {events.map(ev => (
                     <div key={ev.id} className="bi" onClick={() => { setActiveEvent(ev); setPage("event"); }}>
                       <div className="bid">📁 {ev.name}</div>
-                      <button className="btn-d" onClick={(e) => {
-                        e.stopPropagation(); 
-                        if(confirm(`Delete folder "${ev.name}" and all associated data?`)) {
-                          db.collection("events").doc(ev.id).delete();
-                        }
-                      }}>Delete</button>
+                      <button className="btn-d" onClick={(e) => {e.stopPropagation(); confirm(`Delete ${ev.name}?`) && db.collection("events").doc(ev.id).delete();}}>Delete</button>
                     </div>
                   ))}
                 </div>
@@ -179,25 +169,16 @@
             <div style={{display:'flex', flexDirection:'column', flex:1}}>
               <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', paddingRight:16}}>
                 <button className="back-btn" onClick={() => setPage("home")}>← BACK</button>
-                {/* This line displays the Active Event Name */}
-                <div style={{fontFamily:'var(--disp)', fontSize:'14px', color:'var(--yellow)', fontWeight:'bold'}}>
-                  📍 {activeEvent?.name}
-                </div>
+                <div style={{fontFamily:'var(--disp)', fontSize:'14px', color:'var(--yellow)', fontWeight:'bold'}}>📍 {activeEvent?.name}</div>
               </div>
               <div className="tabs">
                 {[
                   { id: "pre", label: "📋 PRE-MATCH" },
                   { id: "post", label: "⌛ POST-MATCH" },
-                  { id: "history", label: "📊 MATCH HISTORY" },
-                  { id: "stats", label: "📈 BATTERY STATS" }
+                  { id: "history", label: "📊 HISTORY" },
+                  { id: "stats", label: "📈 STATS" }
                 ].map(t => (
-                  <button 
-                    key={t.id} 
-                    className={`tab ${tab === t.id ? 'on' : ''}`} 
-                    onClick={() => setTab(t.id)}
-                  >
-                    {t.label}
-                  </button>
+                  <button key={t.id} className={`tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>{t.label}</button>
                 ))}
               </div>
               <div className="pg">
@@ -206,12 +187,12 @@
                     <input className="inp" type="number" placeholder="Match #" value={pre.match} onChange={e=>setPre({...pre, match:e.target.value})}/>
                     <select className="inp" value={pre.bat} onChange={e=>setPre({...pre, bat:e.target.value})}>
                       <option value="">-- Select Battery --</option>
-                      {batteries.map(b => <option key={b.id} value={b.id}>{b.id}</option>)}
+                      {sortedBats.map(b => <option key={b.id} value={b.id}>{b.id}</option>)}
                     </select>
-                    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
-                      <input className="inp" placeholder="V" type="number" value={pre.v} onChange={e=>setPre({...pre, v:e.target.value})}/>
-                      <input className="inp" placeholder="Charge %" type="number" value={pre.pct} onChange={e=>setPre({...pre, pct:e.target.value})}/>
-                      <input className="inp" placeholder="IR" type="number" value={pre.ir} onChange={e=>setPre({...pre, ir:e.target.value})}/>
+                    <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10}}>
+                      <input className="inp" placeholder="V" type="number" step="0.01" value={pre.v} onChange={e=>setPre({...pre, v:e.target.value})}/>
+                      <input className="inp" placeholder="%" type="number" value={pre.pct} onChange={e=>setPre({...pre, pct:e.target.value})}/>
+                      <input className="inp" placeholder="IR" type="number" step="0.01" value={pre.ir} onChange={e=>setPre({...pre, ir:e.target.value})}/>
                     </div>
                     <button className="btn-p" onClick={savePre}>Save Pre-Match</button>
                   </div></div>
@@ -227,8 +208,8 @@
                   <div>
                     {eventRecords.sort((a,b)=>b.timestamp-a.timestamp).map(r => (
                       <div key={r.id} className="card">
-                        <div className="ch"><div className="bid">Match {r.match}</div><div className="ct">{r.bat}</div></div>
-                        <div className="cb" style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10}}>
+                        <div className="ch"><div className="bid">Match {r.match}</div><div className="ct" style={{color:'var(--yellow)'}}>{r.bat}</div></div>
+                        <div className="cb" style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
                           <div className="st"><div className="sl">V</div><div className="sv">{r.pre.v}→{r.post?.v||'-'}</div><Delta a={r.pre.v} b={r.post?.v}/></div>
                           <div className="st"><div className="sl">%</div><div className="sv">{r.pre.pct}→{r.post?.pct||'-'}</div><Delta a={r.pre.pct} b={r.post?.pct}/></div>
                           <div className="st"><div className="sl">IR</div><div className="sv">{r.pre.ir}→{r.post?.ir||'-'}</div><Delta a={r.pre.ir} b={r.post?.ir}/></div>
@@ -237,7 +218,7 @@
                     ))}
                   </div>
                 )}
-                {tab === "stats" && <StatsTab batteries={batteries} records={eventRecords} />}
+                {tab === "stats" && <StatsTab batteries={sortedBats} records={eventRecords} />}
               </div>
             </div>
           )}
@@ -251,12 +232,12 @@
       const [ir, setIr] = React.useState('');
       return (
         <div className="card">
-          <div className="ch"><div className="ct">Post-Match: {record.match}</div></div>
+          <div className="ch"><div className="ct">Post-Match: Match {record.match} ({record.bat})</div></div>
           <div className="cb">
             <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
-              <input className="inp" placeholder="V" type="number" value={v} onChange={e=>setV(e.target.value)}/>
+              <input className="inp" placeholder="V" type="number" step="0.01" value={v} onChange={e=>setV(e.target.value)}/>
               <input className="inp" placeholder="%" type="number" value={pct} onChange={e=>setPct(e.target.value)}/>
-              <input className="inp" placeholder="IR" type="number" value={ir} onChange={e=>setIr(e.target.value)}/>
+              <input className="inp" placeholder="IR" type="number" step="0.01" value={ir} onChange={e=>setIr(e.target.value)}/>
             </div>
             <button className="btn-p" onClick={() => onSave(record.id, {v, pct, ir})}>Submit</button>
           </div>
@@ -264,30 +245,116 @@
       );
     };
 
-    const StatsTab = ({batteries, records}) => (
-      <div className="card">
-        <div className="ch"><div className="ct">Analytics</div></div>
-        <div className="cb" style={{padding:0}}>
-          <table>
-            <thead><tr><th>ID</th><th>Matches</th><th>Avg Drop (V)</th></tr></thead>
-            <tbody>
-              {batteries.map(b => {
-                const bRecs = records.filter(r => r.bat === b.id && r.post);
-                if (bRecs.length === 0) return null;
-                const avg = (bRecs.reduce((acc, r) => acc + (parseFloat(b.id === 'placeholder' ? 0 : r.post.v) - parseFloat(r.pre.v)), 0) / bRecs.length).toFixed(2);
-                const isGain = avg > 0;
-                return (
-                  <tr key={b.id}>
-                    <td>{b.id}</td><td>{bRecs.length}</td>
-                    <td style={{color: isGain ? 'var(--green)' : 'var(--red)'}}>{isGain ? '+' : ''}{avg}V</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+    const StatsTab = ({batteries, records}) => {
+      // Filter for records that have post-match data
+      const validRecords = records.filter(r => r.post);
+      
+      // Calculate Health Ranking (Lowest IR to Highest IR)
+      // We take the LATEST IR recorded for each battery
+      const healthRanking = batteries.map(b => {
+        const bRecs = records.filter(r => r.bat === b.id).sort((a,b) => b.timestamp - a.timestamp);
+        const latestIR = bRecs.length > 0 ? parseFloat(bRecs[0].post?.ir || bRecs[0].pre.ir || 0) : 0;
+        return { id: b.id, ir: latestIR };
+      }).filter(b => b.ir > 0).sort((a, b) => a.ir - b.ir);
+
+      return (
+        <div style={{display:'flex', flexDirection:'column', gap:20}}>
+          
+          {/* ── BATTERY OVERVIEW ── */}
+          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>BATTERY OVERVIEW</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
+            <div className="st" style={{textAlign:'center', padding:'15px 10px'}}>
+              <div className="sl">Total Cycles</div>
+              <div className="sv" style={{fontSize:24}}>{validRecords.length}</div>
+            </div>
+            <div className="st" style={{textAlign:'center', padding:'15px 10px'}}>
+              <div className="sl">Avg Event ΔV</div>
+              <div className="sv" style={{fontSize:24, color:'var(--red)'}}>
+                {(validRecords.reduce((acc, r) => acc + (parseFloat(r.post.v) - parseFloat(r.pre.v)), 0) / (validRecords.length || 1)).toFixed(2)}V
+              </div>
+            </div>
+          </div>
+
+          {/* ── BATTERY COMPARISON ── */}
+          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>BATTERY COMPARISON</div>
+          <div className="card" style={{padding:0}}>
+            <table style={{width:'100%'}}>
+              <thead>
+                <tr>
+                  <th style={{padding:12}}>ID</th>
+                  <th>AVG ΔV</th>
+                  <th>AVG Δ%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {batteries.map(b => {
+                  const bRecs = validRecords.filter(r => r.bat === b.id);
+                  if(bRecs.length === 0) return null;
+                  const v = (bRecs.reduce((acc, r) => acc + (parseFloat(r.post.v) - parseFloat(r.pre.v)), 0) / bRecs.length).toFixed(2);
+                  const p = (bRecs.reduce((acc, r) => acc + (parseFloat(r.post.pct) - parseFloat(r.pre.pct)), 0) / bRecs.length).toFixed(0);
+                  return (
+                    <tr key={b.id}>
+                      <td style={{padding:12, fontWeight:'bold'}}>{b.id}</td>
+                      <td style={{color: v < 0 ? 'var(--red)' : 'var(--green)'}}>{v}V</td>
+                      <td style={{color: p < 0 ? 'var(--red)' : 'var(--green)'}}>{p}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ── BATTERY DEEP DIVE ── */}
+          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>BATTERY DEEP DIVE</div>
+          {batteries.map(b => {
+            const bRecs = validRecords.filter(r => r.bat === b.id);
+            if (bRecs.length === 0) return null;
+            const avgV = (bRecs.reduce((acc, r) => acc + (parseFloat(r.post.v) - parseFloat(r.pre.v)), 0) / bRecs.length).toFixed(2);
+            const avgPct = (bRecs.reduce((acc, r) => acc + (parseFloat(r.post.pct) - parseFloat(r.pre.pct)), 0) / bRecs.length).toFixed(1);
+            
+            return (
+              <div key={b.id} className="stat-panel" style={{marginBottom:10}}>
+                <div className="stat-header">
+                  <div className="stat-bat-id">{b.id}</div>
+                  <div className="stat-usage">{bRecs.length} Matches</div>
+                </div>
+                <div className="stat-grid">
+                  <div className="stat-box">
+                    <div className="stat-label">Avg Volt Drop</div>
+                    <div className="stat-value" style={{color: avgV < 0 ? 'var(--red)' : 'var(--green)'}}>{avgV}V</div>
+                  </div>
+                  <div className="stat-box" style={{borderLeftColor:'var(--orange)'}}>
+                    <div className="stat-label">Avg % Drop</div>
+                    <div className="stat-value" style={{color: avgPct < 0 ? 'var(--red)' : 'var(--green)'}}>{avgPct}%</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* ── HEALTH RANKING (BY IR) ── */}
+          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>HEALTH RANKING (LOWEST IR)</div>
+          <div className="card">
+            <div className="cb" style={{padding:0}}>
+              {healthRanking.map((rank, index) => (
+                <div key={rank.id} className="bi" style={{background: index === 0 ? 'rgba(57, 255, 20, 0.05)' : 'none'}}>
+                  <div style={{display:'flex', alignItems:'center', gap:15}}>
+                    <div style={{fontFamily:'var(--mono)', fontSize:12, color:'var(--muted)'}}>#{index + 1}</div>
+                    <div className="bid">{rank.id}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div className="sl">LATEST IR</div>
+                    <div className="sv" style={{color: index === 0 ? 'var(--green)' : 'var(--text)'}}>{rank.ir} mΩ</div>
+                  </div>
+                </div>
+              ))}
+              {healthRanking.length === 0 && <div style={{padding:20, textAlign:'center', color:'var(--muted)'}}>No IR data available yet</div>}
+            </div>
+          </div>
+
         </div>
-      </div>
-    );
+      );
+    };
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
