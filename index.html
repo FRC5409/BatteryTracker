@@ -148,7 +148,11 @@
                   {batteries.sort((a,b)=>a.id.localeCompare(b.id, undefined, {numeric:true})).map(b => (
                     <div key={b.id} className="bi">
                       <div className="bid">{b.id}</div>
-                      <button className="btn-d" onClick={() => db.collection("batteries").doc(b.id).delete()}>Delete</button>
+                      <button className="btn-d" onClick={() => {
+                        if(confirm(`Are you sure you want to delete battery "${b.id}"?`)) {
+                          db.collection("batteries").doc(b.id).delete();
+                        }
+                      }}>Delete</button>
                     </div>
                   ))}
                 </div>
@@ -160,7 +164,12 @@
                   {events.map(ev => (
                     <div key={ev.id} className="bi" onClick={() => { setActiveEvent(ev); setPage("event"); }}>
                       <div className="bid">📁 {ev.name}</div>
-                      <button className="btn-d" onClick={(e) => {e.stopPropagation(); db.collection("events").doc(ev.id).delete();}}>Delete</button>
+                      <button className="btn-d" onClick={(e) => {
+                        e.stopPropagation(); 
+                        if(confirm(`Delete folder "${ev.name}" and all associated data?`)) {
+                          db.collection("events").doc(ev.id).delete();
+                        }
+                      }}>Delete</button>
                     </div>
                   ))}
                 </div>
