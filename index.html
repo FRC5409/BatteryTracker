@@ -101,7 +101,7 @@
       }, []);
 
       const handleAddBattery = () => {
-        const n = prompt("Battery Name (e.g. B1):");
+        const n = prompt("Battery Name (e.g. El Primo):");
         if(n) db.collection("batteries").doc(n.toUpperCase().trim()).set({ added: Date.now() });
       };
 
@@ -143,7 +143,7 @@
           {page === "home" ? (
             <div className="pg">
               <div className="card">
-                <div className="ch"><div className="ct">Batteries</div><button className="btn-qr" onClick={handleAddBattery}>+ Add</button></div>
+                <div className="ch"><div className="ct">🔋 Batteries</div><button className="btn-qr" onClick={handleAddBattery}>+ Add</button></div>
                 <div className="cb" style={{padding:0}}>
                   {batteries.sort((a,b)=>a.id.localeCompare(b.id, undefined, {numeric:true})).map(b => (
                     <div key={b.id} className="bi">
@@ -155,7 +155,7 @@
               </div>
 
               <div className="card">
-                <div className="ch"><div className="ct">Event Folders</div><button className="btn-qr" onClick={handleAddEvent}>+ New</button></div>
+                <div className="ch"><div className="ct">📁 Event Folders</div><button className="btn-qr" onClick={handleAddEvent}>+ New</button></div>
                 <div className="cb" style={{padding:0}}>
                   {events.map(ev => (
                     <div key={ev.id} className="bi" onClick={() => { setActiveEvent(ev); setPage("event"); }}>
@@ -170,8 +170,19 @@
             <div style={{display:'flex', flexDirection:'column', flex:1}}>
               <button className="back-btn" onClick={() => setPage("home")}>← BACK</button>
               <div className="tabs">
-                {["pre", "post", "history", "stats"].map(t => (
-                  <button key={t} className={`tab ${tab === t ? 'on' : ''}`} onClick={() => setTab(t)}>{t}</button>
+                {[
+                  { id: "pre", label: "📋 PRE" },
+                  { id: "post", label: "⌛ POST-MATCH" },
+                  { id: "history", label: "📊 HISTORY" },
+                  { id: "stats", label: "📈 STATS" }
+                ].map(t => (
+                  <button 
+                    key={t.id} 
+                    className={`tab ${tab === t.id ? 'on' : ''}`} 
+                    onClick={() => setTab(t.id)}
+                  >
+                    {t.label}
+                  </button>
                 ))}
               </div>
               <div className="pg">
