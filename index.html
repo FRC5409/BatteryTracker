@@ -8,8 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ── STYLES ── */
-    *{box-sizing:border-box;margin:0;padding:0;}
     :root{
       --blue:#384293;--black:#000000;
       --red:#FF4D4D;--red-dark:#8B1010;
@@ -19,15 +17,19 @@
       --border:#1E2D5A;--text:#E8ECF8;--muted:#5A6A99;
       --mono:'Share Tech Mono',monospace;--disp:'Oswald',sans-serif;--body:'Barlow Condensed',sans-serif;
     }
+    *{box-sizing:border-box;margin:0;padding:0;}
     html,body{background:var(--bg);height:100%;font-family:var(--body);color:var(--text);-webkit-tap-highlight-color:transparent;}
     .app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+    
+    /* Header & Tabs */
     .hdr{background:var(--black);border-bottom:3px solid var(--yellow);position:sticky;top:0;z-index:100;}
     .hdr-inner{display:flex;align-items:center;padding:12px 16px;gap:15px;}
     .hdr-title{font-family:var(--disp);font-size:24px;font-weight:900;letter-spacing:1px;color:var(--yellow);line-height:1;}
-    .hdr-subtitle { display: block; font-size: 1rem; font-weight: normal; color: #666; }
     .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:71px;z-index:90;}
     .tab{flex:1;padding:14px 5px;font-family:var(--disp);font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;}
     .tab.on{color:var(--yellow);border-bottom-color:var(--yellow);background:rgba(245,200,0,0.05);}
+    
+    /* Layout */
     .pg{padding:16px;flex:1;}
     .card{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden;}
     .ch{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--surface2);}
@@ -35,28 +37,41 @@
     .cb{padding:16px;}
     .bi{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
     .bid{font-family:var(--disp);font-size:18px;font-weight:700;}
-    .btn-qr{background:var(--blue);color:white;border:none;padding:6px 12px;border-radius:3px;font-family:var(--disp);font-size:11px;cursor:pointer;}
-    .btn-d{color:var(--red);background:none;border:none;font-size:11px;cursor:pointer;font-family:var(--disp);}
+    
+    /* Form Elements */
     .inp{width:100%;background:#070B16;border:1px solid var(--border);border-radius:3px;padding:12px;color:var(--text);font-family:var(--mono);margin-bottom:10px;outline:none;}
     .btn-p{width:100%;background:var(--blue);color:white;border:none;padding:14px;font-family:var(--disp);font-size:14px;font-weight:700;text-transform:uppercase;border-radius:3px;cursor:pointer;}
-    .st{background:#070B16;padding:10px;border:1px solid var(--border);border-radius:2px;}
-    .sl{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;}
-    .sv{font-family:var(--mono);font-size:14px;font-weight:600;}
+    .btn-qr{background:var(--blue);color:white;border:none;padding:6px 12px;border-radius:3px;font-family:var(--disp);font-size:11px;cursor:pointer;}
+    .btn-d{color:var(--red);background:none;border:none;font-size:11px;cursor:pointer;font-family:var(--disp);}
     .back-btn{background:none;border:none;color:var(--yellow);padding:10px 16px;font-family:var(--disp);cursor:pointer;font-weight:700;}
+
+    /* Stats Overview Grid */
+    .ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+    .ov-box{background:#070B16;padding:12px;border:1px solid var(--border);border-radius:4px;}
+    .ov-label{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+    .ov-val{font-family:var(--disp);font-size:20px;font-weight:700;line-height:1;}
+
+    /* Comparison Graph */
+    .comp-tabs { display: flex; background: #070B16; border-radius: 4px; padding: 4px; margin-bottom: 20px; }
+    .comp-tab { flex:1; background:none; border:none; color: var(--muted); padding: 8px; font-family: var(--disp); font-size: 10px; font-weight: 700; border-radius: 2px; cursor: pointer; }
+    .comp-tab.on { background: var(--surface2); color: var(--yellow); }
     
-    /* Stats Panels */
-    .stat-panel{background:rgba(22, 30, 53, 0.6);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;}
-    .stat-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;}
-    .stat-bat-id{font-family:var(--disp);font-size:28px;font-weight:900;line-height:1;color:var(--text);}
-    .stat-usage{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;}
-    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-    .stat-box{background:rgba(7, 11, 22, 0.5);padding:10px;border-radius:4px;border-left:3px solid var(--blue);}
-    .stat-label{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
-    .stat-value{font-family:var(--disp);font-size:18px;font-weight:700;}
+    .graph-container { position: relative; padding-bottom: 30px; margin-top: 10px; min-height: 100px;}
+    .chart-row { display: flex; align-items: center; margin-bottom: 8px; gap: 12px; position: relative; z-index: 2;}
+    .chart-label { width: 50px; font-family: var(--disp); font-weight: 700; font-size: 14px; color: var(--text); text-align: right; }
+    .chart-track { flex: 1; background: rgba(255,255,255,0.03); height: 18px; border-radius: 2px; position: relative; }
+    .chart-bar { height: 100%; border-radius: 2px; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
     
-    table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;}
-    th{text-align:left;color:var(--muted);padding:12px 8px;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;}
-    td{padding:12px 8px;border-bottom:1px solid var(--border);}
+    .grid-lines { position: absolute; top: 0; left: 62px; right: 0; bottom: 30px; display: flex; justify-content: space-between; pointer-events: none; }
+    .grid-line { width: 1px; height: 100%; background: rgba(255,255,255,0.08); }
+
+    .x-axis { position: absolute; bottom: 0; left: 62px; right: 0; display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 6px; }
+    .x-tick { font-family: var(--mono); font-size: 9px; color: var(--muted); position: relative; transform: translateX(-50%); }
+
+    /* Rankings & Deep Dive */
+    .rank-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; }
+    .rank-id { font-family: var(--disp); font-weight: 700; }
+    .rank-stat { font-family: var(--mono); font-size: 12px; }
   </style>
 </head>
 <body>
@@ -80,13 +95,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const Delta = ({a, b}) => {
-      if(!a || !b) return null;
-      const val = (parseFloat(b) - parseFloat(a)).toFixed(2);
-      const isPos = val > 0;
-      return <div style={{fontSize:9, color: isPos ? 'var(--green)' : 'var(--red)', fontFamily:'var(--mono)'}}>{isPos ? '+' : ''}{val}</div>;
-    };
-
     const App = () => {
       const [page, setPage] = React.useState("home");
       const [tab, setTab] = React.useState("pre");
@@ -103,8 +111,8 @@
         return () => { u1(); u2(); u3(); };
       }, []);
 
-      const sortedBats = [...batteries].sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
       const eventRecords = records.filter(r => r.eventId === activeEvent?.id);
+      const sortedBats = [...batteries].sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
 
       const savePre = () => {
         if(!pre.match || !pre.bat || !pre.v) return alert("Missing Info");
@@ -121,8 +129,7 @@
         <div className="app">
           <div className="hdr">
             <div className="hdr-inner">
-              <img src="ChargersLogo.png" alt="Chargers Logo" width="50" height="50" />
-              <div className="hdr-title">5409 CHARGERS ⚡ <span className="hdr-subtitle">BATTERY TRACKER</span></div>
+              <div className="hdr-title">5409 CHARGERS ⚡</div>
             </div>
           </div>
 
@@ -140,12 +147,11 @@
                 </div>
               </div>
               <div className="card">
-                <div className="ch"><div className="ct">📁 Event Folders</div><button className="btn-qr" onClick={() => {const n = prompt("Name:"); if(n) db.collection("events").add({name: n, timestamp: Date.now()})}}>+ New</button></div>
+                <div className="ch"><div className="ct">📁 Events</div><button className="btn-qr" onClick={() => {const n = prompt("Event Name:"); if(n) db.collection("events").add({name: n, timestamp: Date.now()})}}>+ New</button></div>
                 <div className="cb" style={{padding:0}}>
                   {events.map(ev => (
                     <div key={ev.id} className="bi" onClick={() => { setActiveEvent(ev); setPage("event"); }}>
                       <div className="bid">📁 {ev.name}</div>
-                      <button className="btn-d" onClick={(e) => {e.stopPropagation(); confirm(`Delete ${ev.name}?`) && db.collection("events").doc(ev.id).delete();}}>Delete</button>
                     </div>
                   ))}
                 </div>
@@ -155,7 +161,7 @@
             <div style={{display:'flex', flexDirection:'column', flex:1}}>
               <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', paddingRight:16}}>
                 <button className="back-btn" onClick={() => setPage("home")}>← BACK</button>
-                <div style={{fontFamily:'var(--disp)', fontSize:'14px', color:'var(--yellow)', fontWeight:'bold'}}>📍 {activeEvent?.name}</div>
+                <div style={{fontFamily:'var(--disp)', fontSize:'12px', color:'var(--yellow)'}}>{activeEvent?.name}</div>
               </div>
               <div className="tabs">
                 {[{id:"pre", label:"📋 PRE"}, {id:"post", label:"⌛ POST"}, {id:"history", label:"📊 HISTORY"}, {id:"stats", label:"📈 STATS"}].map(t => (
@@ -173,21 +179,21 @@
                     <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10}}>
                       <input className="inp" placeholder="V" type="number" step="0.01" value={pre.v} onChange={e=>setPre({...pre, v:e.target.value})}/>
                       <input className="inp" placeholder="%" type="number" value={pre.pct} onChange={e=>setPre({...pre, pct:e.target.value})}/>
-                      <input className="inp" placeholder="IR" type="number" step="0.01" value={pre.ir} onChange={e=>setPre({...pre, ir:e.target.value})}/>
+                      <input className="inp" placeholder="IR" type="number" step="0.1" value={pre.ir} onChange={e=>setPre({...pre, ir:e.target.value})}/>
                     </div>
-                    <button className="btn-p" onClick={savePre}>Save Pre-Match</button>
+                    <button className="btn-p" onClick={savePre}>Log Pre-Match</button>
                   </div></div>
                 )}
                 {tab === "post" && (
                   <div>
                     {eventRecords.filter(r => !r.post).map(r => (
                       <div key={r.id} className="card">
-                        <div className="ch"><div className="ct">Post-Match: {r.bat} (M{r.match})</div></div>
+                        <div className="ch"><div className="ct">Post: {r.bat} (M{r.match})</div></div>
                         <div className="cb">
                           <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:10}}>
                             <input id={`v-${r.id}`} className="inp" placeholder="V" type="number" step="0.01" />
                             <input id={`p-${r.id}`} className="inp" placeholder="%" type="number" />
-                            <input id={`i-${r.id}`} className="inp" placeholder="IR" type="number" step="0.01" />
+                            <input id={`i-${r.id}`} className="inp" placeholder="IR" type="number" step="0.1" />
                           </div>
                           <button className="btn-p" onClick={() => {
                             const v = document.getElementById(`v-${r.id}`).value;
@@ -201,20 +207,17 @@
                   </div>
                 )}
                 {tab === "history" && (
-                  <div>
-                    {eventRecords.sort((a,b)=>b.timestamp-a.timestamp).map(r => (
-                      <div key={r.id} className="card">
-                        <div className="ch"><div className="bid">Match {r.match}</div><div className="ct">{r.bat}</div></div>
-                        <div className="cb" style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8}}>
-                          <div className="st"><div className="sl">V</div><div className="sv">{r.pre.v}→{r.post?.v||'-'}</div><Delta a={r.pre.v} b={r.post?.v}/></div>
-                          <div className="st"><div className="sl">%</div><div className="sv">{r.pre.pct}→{r.post?.pct||'-'}</div><Delta a={r.pre.pct} b={r.post?.pct}/></div>
-                          <div className="st"><div className="sl">IR</div><div className="sv">{r.pre.ir}→{r.post?.ir||'-'}</div><Delta a={r.pre.ir} b={r.post?.ir}/></div>
-                        </div>
+                  <div>{eventRecords.sort((a,b)=>b.timestamp-a.timestamp).map(r => (
+                    <div key={r.id} className="card" style={{marginBottom:10}}>
+                      <div className="ch" style={{padding:'8px 16px'}}><div className="bid" style={{fontSize:14}}>M{r.match} — {r.bat}</div></div>
+                      <div className="cb" style={{display:'flex', gap:20, padding:'10px 16px'}}>
+                        <div style={{fontFamily:'var(--mono)', fontSize:12}}>V: {r.pre.v}→{r.post?.v||'--'}</div>
+                        <div style={{fontFamily:'var(--mono)', fontSize:12}}>IR: {r.pre.ir}→{r.post?.ir||'--'}</div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}</div>
                 )}
-                {tab === "stats" && <StatsTab batteries={sortedBats} records={eventRecords} />}
+                {tab === "stats" && <StatsView batteries={sortedBats} records={eventRecords} />}
               </div>
             </div>
           )}
@@ -222,91 +225,147 @@
       );
     };
 
-    const StatsTab = ({batteries, records}) => {
+    const StatsView = ({batteries, records}) => {
+      const [activeSubTab, setActiveSubTab] = React.useState("ir");
+      const [selectedBat, setSelectedBat] = React.useState("");
       const valid = records.filter(r => r.post);
-      
-      const avg = (arr, key, isPost = true) => {
-        if (!arr.length) return 0;
-        return arr.reduce((acc, r) => acc + parseFloat((isPost ? r.post[key] : r.pre[key]) || 0), 0) / arr.length;
+
+      // Calculations
+      const avg = (arr, path) => {
+        if(!arr.length) return 0;
+        const sum = arr.reduce((s, r) => s + parseFloat(r.post[path] || 0), 0);
+        return sum / arr.length;
       };
 
-      const avgDrop = (arr, key) => {
-        if (!arr.length) return 0;
-        return arr.reduce((acc, r) => acc + (parseFloat(r.post[key] || 0) - parseFloat(r.pre[key] || 0)), 0) / arr.length;
+      const fleetAvgV = avg(valid, 'v');
+      const fleetAvgIR = avg(valid, 'ir');
+      const fleetAvgDrop = valid.reduce((s, r) => s + (parseFloat(r.pre.v) - parseFloat(r.post.v)), 0) / (valid.length || 1);
+      const fleetAvgCharge = valid.reduce((s, r) => s + (parseFloat(r.pre.pct) - parseFloat(r.post.pct)), 0) / (valid.length || 1);
+
+      const comparisonData = batteries.map(b => {
+        const bRecs = valid.filter(r => r.bat === b.id);
+        if(!bRecs.length) return null;
+        const sorted = [...bRecs].sort((a,b)=>b.timestamp-a.timestamp);
+        return {
+          id: b.id,
+          latestIR: parseFloat(sorted[0].post.ir),
+          avgV: avg(bRecs, 'v'),
+          usage: bRecs.length
+        };
+      }).filter(Boolean);
+
+      // Scale Config
+      const getScale = () => {
+        if (activeSubTab === 'ir') {
+          const max = Math.max(...comparisonData.map(d => d.latestIR), 20);
+          return { min: 0, max: Math.ceil(max / 5) * 5, unit: "mΩ", steps: 5 };
+        }
+        if (activeSubTab === 'v') {
+          const maxV = Math.max(...comparisonData.map(d => d.avgV), 13);
+          return { min: 5, max: 13, unit: "V", steps: 4 }; // Floor set to 5V
+        }
+        const maxU = Math.max(...comparisonData.map(d => d.usage), 4);
+        return { min: 0, max: Math.ceil(maxU / 2) * 2, unit: "x", steps: 4 };
       };
 
-      const healthRanking = batteries.map(b => {
-        const bRecs = records.filter(r => r.bat === b.id).sort((a,b) => b.timestamp - a.timestamp);
-        const ir = bRecs.length ? parseFloat(bRecs[0].post?.ir || bRecs[0].pre.ir || 0) : 0;
-        return { id: b.id, ir };
-      }).filter(b => b.ir > 0).sort((a, b) => a.ir - b.ir);
+      const scale = getScale();
+      const ticks = Array.from({length: scale.steps + 1}, (_, i) => 
+        scale.min + (i * (scale.max - scale.min) / scale.steps)
+      );
 
       return (
-        <div style={{display:'flex', flexDirection:'column', gap:20}}>
-          
-          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>BATTERY OVERVIEW</div>
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10}}>
-            <div className="st" style={{textAlign:'center', padding:'15px 10px'}}><div className="sl">Complete Matches</div><div className="sv" style={{fontSize:24}}>{valid.length}</div></div>
-            <div className="st" style={{textAlign:'center', padding:'15px 10px'}}><div className="sl">Avg Post-Match V</div><div className="sv" style={{fontSize:24, color:'var(--green)'}}>{avg(valid, 'v').toFixed(2)}V</div></div>
-          </div>
-          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10}}>
-            <div className="st" style={{textAlign:'center'}}><div className="sl">Avg V Drop</div><div className="sv" style={{color:'var(--red)'}}>{avgDrop(valid, 'v').toFixed(2)}V</div></div>
-            <div className="st" style={{textAlign:'center'}}><div className="sl">Avg % Used</div><div className="sv" style={{color:'var(--orange)'}}>{Math.abs(avgDrop(valid, 'pct')).toFixed(0)}%</div></div>
-            <div className="st" style={{textAlign:'center'}}><div className="sl">Avg Post IR</div><div className="sv">{avg(valid, 'ir').toFixed(1)}</div></div>
+        <div>
+          <div className="ct" style={{marginBottom:10, fontSize:12}}>Fleet Overview</div>
+          <div className="ov-grid">
+            <div className="ov-box">
+              <div className="ov-label">Complete Matches</div>
+              <div className="ov-val" style={{color:'var(--yellow)'}}>{valid.length}</div>
+            </div>
+            <div className="ov-box">
+              <div className="ov-label">Avg Post-Match V</div>
+              <div className="ov-val" style={{color:'var(--green)'}}>{fleetAvgV.toFixed(2)}V</div>
+            </div>
+            <div className="ov-box">
+              <div className="ov-label">Avg Volt Drop</div>
+              <div className="ov-val" style={{color:'#5A99FF'}}>{fleetAvgDrop.toFixed(2)}V</div>
+            </div>
+            <div className="ov-box">
+              <div className="ov-label">Avg Charge Used</div>
+              <div className="ov-val" style={{color:'#5A99FF'}}>{fleetAvgCharge.toFixed(1)}%</div>
+            </div>
           </div>
 
-          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>BATTERY COMPARISON</div>
-          <div className="card" style={{padding:0}}>
-            <table>
-              <thead><tr><th>ID</th><th>AVG ΔV</th><th>AVG Δ%</th><th>LAST IR</th></tr></thead>
-              <tbody>
-                {batteries.map(b => {
-                  const bRecs = valid.filter(r => r.bat === b.id);
-                  if(!bRecs.length) return null;
-                  const v = avgDrop(bRecs, 'v').toFixed(2);
-                  const p = avgDrop(bRecs, 'pct').toFixed(0);
-                  const lastIR = [...bRecs].sort((a,b)=>b.timestamp-a.timestamp)[0].post.ir;
+          <div className="ct" style={{margin:'20px 0 10px', fontSize:12}}>Fleet Comparison</div>
+          <div className="card">
+            <div className="cb">
+              <div className="comp-tabs">
+                <button className={`comp-tab ${activeSubTab==='ir'?'on':''}`} onClick={()=>setActiveSubTab('ir')}>INT RESISTANCE</button>
+                <button className={`comp-tab ${activeSubTab==='v'?'on':''}`} onClick={()=>setActiveSubTab('v')}>POST VOLTAGE</button>
+                <button className={`comp-tab ${activeSubTab==='usage'?'on':''}`} onClick={()=>setActiveSubTab('usage')}>MATCH USAGE</button>
+              </div>
+
+              <div className="graph-container">
+                <div className="grid-lines">
+                  {ticks.map((_, i) => <div key={i} className="grid-line" />)}
+                </div>
+
+                {comparisonData.sort((a,b) => activeSubTab==='ir' ? a.latestIR - b.latestIR : b.avgV - a.avgV).map(d => {
+                  let width = 0, color = 'var(--blue)';
+                  if(activeSubTab==='ir'){
+                    width = (d.latestIR / scale.max) * 100;
+                    color = d.latestIR < 15 ? 'var(--green)' : d.latestIR > 20 ? 'var(--red)' : 'var(--orange)';
+                  } else if(activeSubTab==='v'){
+                    width = ((d.avgV - 5) / (13 - 5)) * 100;
+                    color = d.avgV > 12.3 ? 'var(--green)' : 'var(--orange)';
+                  } else {
+                    width = (d.usage / scale.max) * 100;
+                  }
+
                   return (
-                    <tr key={b.id}>
-                      <td style={{fontWeight:'bold'}}>{b.id}</td>
-                      <td style={{color: v < 0 ? 'var(--red)' : 'var(--green)'}}>{v}V</td>
-                      <td style={{color: p < 0 ? 'var(--red)' : 'var(--green)'}}>{p}%</td>
-                      <td>{lastIR}</td>
-                    </tr>
+                    <div key={d.id} className="chart-row">
+                      <div className="chart-label">{d.id}</div>
+                      <div className="chart-track"><div className="chart-bar" style={{width:`${Math.max(2, width)}%`, background:color}} /></div>
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+
+                <div className="x-axis">
+                  {ticks.map((t, i) => <div key={i} className="x-tick">{t.toFixed(activeSubTab==='v'?1:0)}{scale.unit}</div>)}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>BATTERY DEEP DIVE</div>
-          {batteries.map(b => {
-            const bRecs = valid.filter(r => r.bat === b.id);
-            if (!bRecs.length) return null;
-            const v = avgDrop(bRecs, 'v').toFixed(2);
-            const p = avgDrop(bRecs, 'pct').toFixed(1);
-            return (
-              <div key={b.id} className="stat-panel">
-                <div className="stat-header"><div className="stat-bat-id">{b.id}</div><div className="stat-usage">{bRecs.length} Matches</div></div>
-                <div className="stat-grid">
-                  <div className="stat-box"><div className="stat-label">Avg V Drop</div><div className="stat-value" style={{color: v < 0 ? 'var(--red)' : 'var(--green)'}}>{v}V</div></div>
-                  <div className="stat-box" style={{borderLeftColor:'var(--orange)'}}><div className="stat-label">Avg % Drop</div><div className="stat-value" style={{color: p < 0 ? 'var(--red)' : 'var(--green)'}}>{p}%</div></div>
-                </div>
-              </div>
-            );
-          })}
-
-          <div className="section-title" style={{fontFamily:'var(--disp)', color:'var(--yellow)', fontSize:12, letterSpacing:1}}>HEALTH RANKING (LOWEST IR)</div>
+          <div className="ct" style={{margin:'20px 0 10px', fontSize:12}}>Battery Deep Dive</div>
           <div className="card">
-            {healthRanking.map((rank, i) => (
-              <div key={rank.id} className="bi" style={{background: i === 0 ? 'rgba(57, 255, 20, 0.05)' : 'none'}}>
-                <div style={{display:'flex', alignItems:'center', gap:15}}>
-                  <div style={{fontFamily:'var(--mono)', fontSize:10, color:'var(--muted)'}}>#{i+1}</div>
-                  <div className="bid">{rank.id}</div>
+            <div className="cb">
+              <select className="inp" value={selectedBat} onChange={e=>setSelectedBat(e.target.value)}>
+                <option value="">Select Battery...</option>
+                {batteries.map(b => <option key={b.id} value={b.id}>{b.id}</option>)}
+              </select>
+              {selectedBat && (
+                <div style={{marginTop:10}}>
+                  {valid.filter(r => r.bat === selectedBat).map(r => (
+                    <div key={r.id} className="rank-row">
+                      <div className="rank-id">Match {r.match}</div>
+                      <div className="rank-stat">{r.post.v}V | {r.post.ir}mΩ</div>
+                    </div>
+                  ))}
                 </div>
-                <div style={{textAlign:'right'}}><div className="sl">LATEST IR</div><div className="sv" style={{color: i===0?'var(--green)':'var(--text)'}}>{rank.ir} mΩ</div></div>
-              </div>
-            ))}
+              )}
+            </div>
+          </div>
+
+          <div className="ct" style={{margin:'20px 0 10px', fontSize:12}}>Health Ranking (by IR)</div>
+          <div className="card">
+            <div className="cb">
+              {comparisonData.sort((a,b)=>a.latestIR-b.latestIR).map((d, i) => (
+                <div key={d.id} className="rank-row">
+                  <div className="rank-id">{i+1}. {d.id}</div>
+                  <div className="rank-stat" style={{color: d.latestIR < 15 ? 'var(--green)' : 'var(--text)'}}>{d.latestIR} mΩ</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       );
