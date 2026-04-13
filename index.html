@@ -162,10 +162,31 @@
                 </div>
               </div>
               <div className="card">
-                <div className="ch"><div className="ct">📁 Events</div><button className="btn-qr" onClick={() => {const n = prompt("Event Name:"); if(n) db.collection("events").add({name: n, timestamp: Date.now()})}}>+ New</button></div>
+                <div className="ch">
+                  <div className="ct">📁 Events</div>
+                  <button className="btn-qr" onClick={() => {const n = prompt("Event Name:"); if(n) db.collection("events").add({name: n, timestamp: Date.now()})}}>+ New</button>
+                </div>
                 <div className="cb" style={{padding:0}}>
                   {events.map(ev => (
-                    <div key={ev.id} className="bi" onClick={() => { setActiveEvent(ev); setPage("event"); }}><div className="bid">📁 {ev.name}</div></div>
+                    <div 
+                      key={ev.id} 
+                      className="bi" 
+                      onClick={() => { setActiveEvent(ev); setPage("event"); }}
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                    >
+                      <div className="bid">📁 {ev.name}</div>
+                      <button 
+                        className="btn-d" 
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevents navigating to the event page when clicking delete
+                          if (confirm(`Delete event "${ev.name}"?`)) {
+                            db.collection("events").doc(ev.id).delete();
+                          }
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
