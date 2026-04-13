@@ -388,7 +388,12 @@
                   <div key={d.id} className="chart-row">
                     <div className="chart-label" style={{fontWeight: 700}}>{d.id}</div>
                     <div className="chart-track">
-                      <div className="chart-bar" style={{width:`${Math.min(100, Math.max(2, w))}%`, background:activeSubTab==='ir'?(val<15?'var(--green)':'var(--orange)'):'var(--blue)'}}></div>
+                      <div className="chart-bar" style={{width:`${Math.min(100, Math.max(2, w))}%`, 
+                        background: activeSubTab === 'ir' 
+                          ? (val < 15 ? 'var(--green)' : val <= 20 ? 'var(--orange)' : 'var(--red)') 
+                          : activeSubTab === 'v' 
+                            ? (val > 12.5 ? 'var(--green)' : val >= 12 ? 'var(--yellow)' : 'var(--red)') 
+                            : 'var(--blue)'}}></div>
                     </div>
                     <div className="chart-val-label">{val.toFixed(1)}{compScale.unit}</div>
                   </div>
