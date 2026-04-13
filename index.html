@@ -386,7 +386,7 @@
 
       const getCompScale = () => {
         if (activeSubTab === 'ir') return { min: 0, max: 25, unit: "mΩ", steps: 5 };
-        if (activeSubTab === 'v') return { min: 10.5, max: 13, unit: "V", steps: 5 };
+        if (activeSubTab === 'post voltage') return { min: 10.5, max: 13, unit: "V", steps: 5 };
         if (activeSubTab === 'drain') return { min: 0, max: 50, unit: "%", steps: 5 };
         return { min: 0, max: 10, unit: "x", steps: 5 };
       };
@@ -445,15 +445,15 @@
           <div className="ct" style={{margin:'24px 0 10px', fontSize:12, fontWeight: 600}}>Battery Comparison</div>
           <div className="card"><div className="cb">
             <div className="comp-tabs">
-              {['ir','v','drain','usage'].map(t => (
+              {['ir','post voltage','drain','match usage'].map(t => (
                 <button key={t} className={`comp-tab ${activeSubTab===t?'on':''}`} onClick={()=>setActiveSubTab(t)}>{t.toUpperCase()}</button>
               ))}
             </div>
             <div className="graph-container">
               <div className="grid-lines">{compTicks.map((_, i) => <div key={i} className="grid-line" />)}</div>
               {comparisonData.sort((a,b) => activeSubTab==='ir' ? a.latestIR - b.latestIR : b.avgV - a.avgV).map(d => {
-                const val = activeSubTab==='v' ? d.avgV : (activeSubTab==='ir' ? d.latestIR : (activeSubTab==='usage' ? d.usage : d.avgDrain));
-                const w = activeSubTab==='v' ? ((val-compScale.min)/(compScale.max-compScale.min))*100 : (val/compScale.max)*100;
+                const val = activeSubTab==='post voltage' ? d.avgV : (activeSubTab==='ir' ? d.latestIR : (activeSubTab==='match usage' ? d.usage : d.avgDrain));
+                const w = activeSubTab==='post voltage' ? ((val-compScale.min)/(compScale.max-compScale.min))*100 : (val/compScale.max)*100;
                 return (
                   <div key={d.id} className="chart-row">
                     <div className="chart-label" style={{fontWeight: 700}}>{d.id}</div>
@@ -461,7 +461,7 @@
                       <div className="chart-bar" style={{width:`${Math.min(100, Math.max(2, w))}%`, 
                         background: activeSubTab === 'ir' 
                           ? (val < 15 ? 'var(--green)' : val <= 20 ? 'var(--orange)' : 'var(--red)') 
-                          : activeSubTab === 'v' 
+                          : activeSubTab === 'post voltage' 
                             ? (val > 12.5 ? 'var(--green)' : val >= 12 ? 'var(--yellow)' : 'var(--red)') 
                             : 'var(--blue)'}}></div>
                     </div>
