@@ -243,13 +243,12 @@
                 {tab === "history" && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {eventRecords.sort((a, b) => b.timestamp - a.timestamp).map(r => {
-                      // Logic for calculating the drops/rises
                       const vDiff = r.post ? (parseFloat(r.pre.v) - parseFloat(r.post.v)).toFixed(1) : null;
                       const pctDiff = r.post ? (parseInt(r.pre.pct) - parseInt(r.post.pct)) : null;
                       const irDiff = r.post ? Math.round((parseFloat(r.post.ir) - parseFloat(r.pre.ir)) * 10) / 10 : null;
 
                       return (
-                        <div key={r.id} className="card" style={{ padding: 12 }}>
+                        <div key={r.id} className="card" style={{ padding: 12, position: 'relative' }}>
                           {/* Header Row */}
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                             <div>
@@ -260,49 +259,62 @@
                                 {new Date(r.timestamp).toLocaleString()}
                               </div>
                             </div>
-                            <div style={{ 
-                              border: '1px solid var(--yellow)', 
-                              padding: '2px 10px', 
-                              borderRadius: 4, 
-                              color: 'var(--yellow)', 
-                              fontSize: 11, 
-                              fontWeight: 800,
-                              letterSpacing: '0.5px'
-                            }}>
-                              MATCH {r.match}
+                            
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                              <div style={{ 
+                                border: '1px solid var(--yellow)', 
+                                padding: '2px 10px', 
+                                borderRadius: 4, 
+                                color: 'var(--yellow)', 
+                                fontSize: 11, 
+                                fontWeight: 800,
+                                letterSpacing: '0.5px'
+                              }}>
+                                MATCH {r.match}
+                              </div>
+                              
+                              {/* DELETE BUTTON */}
+                              <button 
+                                onClick={() => {
+                                  if(confirm(`Delete log for ${r.bat} (Match ${r.match})?`)) {
+                                    db.collection("records").doc(r.id).delete();
+                                  }
+                                }}
+                                style={{
+                                  background: 'rgba(255, 70, 70, 0.1)',
+                                  border: '1px solid #ff4646',
+                                  color: '#ff4646',
+                                  borderRadius: '4px',
+                                  padding: '2px 6px',
+                                  fontSize: '10px',
+                                  fontWeight: 'bold',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                ✕
+                              </button>
                             </div>
                           </div>
 
                           {/* Stats Grid */}
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                            
-                            {/* VOLTAGE BOX */}
+                            {/* ... rest of your Voltage, Charge, and IR boxes remain the same ... */}
                             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.05)' }}>
                               <div style={{ fontSize: 9, color: 'var(--muted)', fontWeight: 700, marginBottom: 4 }}>VOLTAGE</div>
                               <div style={{ fontSize: 15, fontWeight: 800, fontFamily: 'var(--mono)' }}>
                                 {r.pre.v}<span style={{ color: 'var(--muted)', margin: '0 2px', fontWeight: 400 }}>→</span>{r.post?.v || '--'}
                               </div>
-                              {vDiff && (
-                                <div style={{ fontSize: 11, color: 'var(--red)', marginTop: 2, fontWeight: 700 }}>
-                                  ▼ {vDiff}
-                                </div>
-                              )}
+                              {vDiff && <div style={{ fontSize: 11, color: 'var(--red)', marginTop: 2, fontWeight: 700 }}>▼ {vDiff}</div>}
                             </div>
 
-                            {/* CHARGE BOX */}
                             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.05)' }}>
                               <div style={{ fontSize: 9, color: 'var(--muted)', fontWeight: 700, marginBottom: 4 }}>CHARGE %</div>
                               <div style={{ fontSize: 15, fontWeight: 800, fontFamily: 'var(--mono)' }}>
                                 {r.pre.pct}<span style={{ color: 'var(--muted)', margin: '0 2px', fontWeight: 400 }}>→</span>{r.post?.pct || '--'}
                               </div>
-                              {pctDiff !== null && (
-                                <div style={{ fontSize: 11, color: 'var(--red)', marginTop: 2, fontWeight: 700 }}>
-                                  ▼ {pctDiff}
-                                </div>
-                              )}
+                              {pctDiff !== null && <div style={{ fontSize: 11, color: 'var(--red)', marginTop: 2, fontWeight: 700 }}>▼ {pctDiff}</div>}
                             </div>
 
-                            {/* IR BOX */}
                             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: 4, border: '1px solid rgba(255,255,255,0.05)' }}>
                               <div style={{ fontSize: 9, color: 'var(--muted)', fontWeight: 700, marginBottom: 4 }}>INT RES</div>
                               <div style={{ fontSize: 15, fontWeight: 800, fontFamily: 'var(--mono)' }}>
@@ -314,7 +326,6 @@
                                 </div>
                               )}
                             </div>
-
                           </div>
                         </div>
                       );
